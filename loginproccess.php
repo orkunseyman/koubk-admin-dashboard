@@ -1,26 +1,45 @@
 <?php
-    require('db.php');
-    session_start();
+session_start();
 
-    if (isset($_POST['username'])) {
-        $username = stripslashes($_REQUEST['username']);
-        $username = mysqli_real_escape_string($con, $username);
-        $password = stripslashes($_REQUEST['password']);
-        $password = mysqli_real_escape_string($con, $password);
+require_once 'db.php';
 
-        $query    = "SELECT * FROM `users` WHERE username='$username'
-                     AND password='" . md5($password) . "'";
-        $result = mysqli_query($con, $query) or die(mysql_error());
-        $rows = mysqli_num_rows($result);
-        if ($rows == 1) {
-            $_SESSION['username'] = $username;
+if (isset($_POST['username'])) 
+{
 
-            header("Location: dashboard.php");
-        } else {
-            echo "<div class='form'>
-                  <h3>Incorrect Username/password.</h3><br/>
-                  <p class='link'>Click here to <a href='login.php'>Login</a> again.</p>
-                  </div>";
+    $username = strip_tags($_REQUEST["username"]); 
+    $password  = strip_tags($_REQUEST["password"]);
+    $password=md5($password);
+
+    try {
+    
+            $Query = $db->prepare("SELECT * FROM users WHERE username = :uname");
+            $Query->bindParam(':uname', $username);
+            $Query->execute(); 
+            $Counts = $Query->rowCount();
+            $row = $Query->fetch(PDO::FETCH_ASSOC);
+            if ($Counts > 0) 
+            {
+               
+                if ($username == $row["username"]) 
+                {
+                    if ($password==$row["password"]) 
+                    {
+                        echo"sadasd";   
+                        $_SESSION["user_login"] = $row["username"]; 
+                        header("Location: dashboard.php");  
+                    } else {
+                        header("Location: error.php");
+                    }
+                } else {
+                    header("Location: error.php");
+                }
+            } else {
+                header("Location: error.php");
+            }
+        } catch (PDOException $e) {
+            echo $e;
+
         }
-    } else {
-    ?>
+    }
+  
+?>

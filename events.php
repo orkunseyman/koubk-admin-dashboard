@@ -10,7 +10,7 @@ require_once('db.php');
 <head>
 
 
-    <title>Members</title>
+    <title>Events</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="UI///styles.css" />
     <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -44,7 +44,7 @@ require_once('db.php');
                     <div class="ui breadcrumb" id="breadcrumb">
                         <a class="section ui large header" href="dashboard.php">Home</a>
                         <i class="right chevron icon divider"></i>
-                        <a class="section ui large header" href="members.php">Members</a>
+                        <a class="section ui large header" href="events.php">Events</a>
 
 
                     </div>
@@ -55,15 +55,13 @@ require_once('db.php');
                             <button type="button" id="add_button" class="ui blue huge button">Add</button>
                         </div>
                         <br /><br />
-                        <table id="user_data" class="ui celled striped table">
+                        <table id="event_data" class="ui celled striped table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th>Grade</th>
-                                    <th>Phone</th>
-                                    <th>Interest</th>
+                                    <th>Event Name</th>
+                                    <th>Description</th>
+                                    <th>Attendance</th>
+                                    <th>Date</th>
                                     <th>Update</th>
                                     <th>Delete</th>
                                 </tr>
@@ -79,79 +77,41 @@ require_once('db.php');
 <div class="ui tiny modal">
     <i class="close icon"></i>
     <div class="ui raised segment">
-        <form class="ui form" method="post" id="user_form">
-            <label>Name</label>
+        <form class="ui form" method="post" id="event_form">
+            <label>Event Name</label>
             <div class="field">
-                <input name="name" id="name">
+                <input name="eventname" id="eventname">
             </div>
-
-
             <div class="field">
-                <label>Email</label>
+                <label>Date</label>
                 <div class="field">
-                    <input type="text" name="email" id="email">
+                    <input type="text" name="date" id="date">
                 </div>
 
             </div>
             <div class="field">
-                <label>Department</label>
+                <label>Description</label>
                 <div class="field">
-                    <input type="text" name="department" id="department">
+                    <input type="text" name="description" id="description">
                 </div>
 
             </div>
             <div class="field">
-                <label>Grade</label>
+                <label>Attendance</label>
                 <div class="field">
-                    <input type="text" name="grade" id="grade">
+                    <input type="text" name="attendance" id="attendance">
                 </div>
 
             </div>
-            <div class="field">
-                <label>Phone</label>
-                <div class="field">
-                    <input type="text" name="phone" id="phone">
-                </div>
 
-            </div>
-            <div class="field">
-                <div class="inline fields">
-                    <label>Field</label>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Web Development" checked="checked">
-                            <label>Web Development</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Mobile Development">
-                            <label>Mobile Development</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Machine Learning">
-                            <label>Machine Learning</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Cyber Security">
-                            <label>Cyber Security</label>
-                        </div>
-                    </div>
-                </div>
+            <input type="hidden" name="user_id" id="user_id" />
+            <input type="hidden" name="operation" id="operation" />
+            <input type="submit" name="action" id="action" class="ui fluid large blue submit button" value="Add" />
 
-
-                <input type="hidden" name="user_id" id="user_id" />
-                <input type="hidden" name="operation" id="operation" />
-                <input type="submit" name="action" id="action" class="ui fluid large blue submit button" value="Add" />
-
-                <div class="ui error message"></div>
-            </div>
-        </form>
+            <div class="ui error message"></div>
     </div>
+    </form>
+</div>
 </div>
 </div>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -162,44 +122,32 @@ require_once('db.php');
         $('.ui.form')
             .form({
                 fields: {
-                    email: {
-                        identifier: 'email',
-                        rules: [{
-                                type: 'empty',
-                                prompt: 'Please enter your e-mail'
-                            },
-                            {
-                                type: 'email',
-                                prompt: 'Please enter a valid e-mail'
-                            }
-                        ]
-                    },
-                    name: {
-                        identifier: 'name',
+                    eventname: {
+                        identifier: 'eventname',
                         rules: [{
                             type: 'empty',
-                            prompt: 'Please enter your name'
+                            prompt: 'Please enter a event name'
                         }]
                     },
-                    department: {
-                        identifier: 'department',
+                    date: {
+                        identifier: 'date',
                         rules: [{
                             type: 'empty',
-                            prompt: 'Please enter your department'
+                            prompt: 'Please enter date'
+                        }]
+                    },
+                    description: {
+                        identifier: 'description',
+                        rules: [{
+                            type: 'empty',
+                            prompt: 'Please enter description'
                         }]
                     },
                     grade: {
-                        identifier: 'grade',
+                        identifier: 'attendance',
                         rules: [{
                             type: 'empty',
-                            prompt: 'Please enter your grade'
-                        }]
-                    },
-                    phone: {
-                        identifier: 'phone',
-                        rules: [{
-                            type: 'empty',
-                            prompt: 'Please enter your phone'
+                            prompt: 'Please enter attendance'
                         }]
                     },
 
@@ -208,12 +156,12 @@ require_once('db.php');
 
         $('#add_button').click(function() {
             $('.ui.modal').modal('show');
-            $('#user_form')[0].reset();
+            $('#event_form')[0].reset();
             $('#action').val("Add");
             $('#operation').val("Add");
         });
 
-        var dataTable = $('#user_data').DataTable({
+        var dataTable = $('#event_data').DataTable({
             "pageLength": 300,
             "processing": true,
             "serverSide": true,
@@ -222,43 +170,41 @@ require_once('db.php');
             'serverMethod': 'post',
             "order": [],
             "ajax": {
-                url: "fetchmember.php"
+                url: "fetchevent.php"
             },
-            "columnDefs": [{
-                "targets": [6, 7],
-                "orderable": false
-            }]
+            // "columnDefs": [{
+            //     "targets": [6, 7],
+            //     "orderable": false
+            // }]
 
         });
 
 
-        $(document).on('submit', '#user_form', function(event) {
+        $(document).on('submit', '#event_form', function(event) {
             event.preventDefault();
             var name = $('#name').val();
             var email = $('#email').val();
-            if (name != '' && email != '' && department != '' && phone != '' && grade != '') {
-                $.ajax({
-                    url: "addeditmember.php",
-                    method: 'POST',
-                    data: new FormData(this),
-                    contentType: false,
 
-                    processData: false,
-                    success: function(data) {
-                        $('#user_form')[0].reset();
-                        $('.ui.modal').modal('hide');
-                        dataTable.ajax.reload();
-                    }
-                });
-            } else {
-                alert("Error");
-            }
+            $.ajax({
+                url: "addeditevent.php",
+                method: 'POST',
+                data: new FormData(this),
+                contentType: false,
+
+                processData: false,
+                success: function(data) {
+                    $('#event_form')[0].reset();
+                    $('.ui.modal').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            });
+
         });
 
         $(document).on('click', '.update', function() {
             var user_id = $(this).attr("id");
             $.ajax({
-                url: "singlemember.php",
+                url: "singleevent.php",
                 method: "POST",
                 data: {
                     user_id: user_id
@@ -266,11 +212,10 @@ require_once('db.php');
                 dataType: "json",
                 success: function(data) {
                     $('.ui.modal').modal('show');
-                    $('#name').val(data.name);
-                    $('#email').val(data.email);
-                    $('#department').val(data.department);
-                    $('#grade').val(data.grade);
-                    $('#phone').val(data.phone);
+                    $('#eventname').val(data.eventname);
+                    $('#description').val(data.description);
+                    $('#attendance').val(data.attendance);
+                    $('#date').val(data.date);
                     $('#user_id').val(user_id);
                     $('#action').val("Edit");
                     $('#operation').val("Edit");
@@ -282,7 +227,7 @@ require_once('db.php');
             var user_id = $(this).attr("id");
             if (confirm("Are you sure to delete this?")) {
                 $.ajax({
-                    url: "deletemember.php",
+                    url: "deleteevent.php",
                     method: "POST",
                     data: {
                         user_id: user_id
@@ -300,11 +245,15 @@ require_once('db.php');
         var container = $('<div/>').insertBefore(dataTable.table().container());
 
         var chart = Highcharts.chart(container[0], {
+
+            data: {
+                table: document.getElementById('event_data')
+            },
             chart: {
-                type: 'pie',
+                type: 'line',
             },
             title: {
-                text: 'Members Fields',
+                text: 'Events Attendance',
             },
             series: [{
                 data: chartData(dataTable),
@@ -322,18 +271,16 @@ require_once('db.php');
 
 
             dataTable
-                .column(5, {
+                .column(2, {
                     search: 'applied'
                 })
                 .data()
-                .each(function(val) {
-                    if (counts[val]) {
-                        counts[val] += 1;
-                    } else {
-                        counts[val] = 1;
-                    }
-                });
+                .each(function(val,index) {
+                    
+                    counts[index] = parseInt(val);;
 
+                });
+            
 
             return $.map(counts, function(val, key) {
                 return {

@@ -10,7 +10,7 @@ require_once('db.php');
 <head>
 
 
-    <title>Members</title>
+    <title>Projects</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="UI///styles.css" />
     <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -40,11 +40,11 @@ require_once('db.php');
         <body>
             <div class="ui centered grid container">
 
-                <div class="fourteen wide column">
+                <div class="thirteen wide column">
                     <div class="ui breadcrumb" id="breadcrumb">
                         <a class="section ui large header" href="dashboard.php">Home</a>
                         <i class="right chevron icon divider"></i>
-                        <a class="section ui large header" href="members.php">Members</a>
+                        <a class="section ui large header" href="projects.php">Projects</a>
 
 
                     </div>
@@ -55,15 +55,13 @@ require_once('db.php');
                             <button type="button" id="add_button" class="ui blue huge button">Add</button>
                         </div>
                         <br /><br />
-                        <table id="user_data" class="ui celled striped table">
+                        <table id="table" class="ui celled striped table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th>Grade</th>
-                                    <th>Phone</th>
-                                    <th>Interest</th>
+                                    <th>Project Name</th>
+                                    <th>Github Link</th>
+                                    <th>Project Team</th>
+                                    <th>Description</th>
                                     <th>Update</th>
                                     <th>Delete</th>
                                 </tr>
@@ -79,38 +77,25 @@ require_once('db.php');
 <div class="ui tiny modal">
     <i class="close icon"></i>
     <div class="ui raised segment">
-        <form class="ui form" method="post" id="user_form">
-            <label>Name</label>
+        <form class="ui form" method="post" id="project_form">
             <div class="field">
-                <input name="name" id="name">
-            </div>
-
-
-            <div class="field">
-                <label>Email</label>
+                <label>Project Name</label>
                 <div class="field">
-                    <input type="text" name="email" id="email">
+                    <input type="text" name="projectname" id="projectname">
                 </div>
 
             </div>
             <div class="field">
-                <label>Department</label>
+                <label>Github Link</label>
                 <div class="field">
-                    <input type="text" name="department" id="department">
+                    <input type="text" name="githublink" id="githublink">
                 </div>
 
             </div>
             <div class="field">
-                <label>Grade</label>
+                <label>Description</label>
                 <div class="field">
-                    <input type="text" name="grade" id="grade">
-                </div>
-
-            </div>
-            <div class="field">
-                <label>Phone</label>
-                <div class="field">
-                    <input type="text" name="phone" id="phone">
+                    <input type="text" name="description" id="description">
                 </div>
 
             </div>
@@ -119,26 +104,26 @@ require_once('db.php');
                     <label>Field</label>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Web Development" checked="checked">
-                            <label>Web Development</label>
+                            <input type="radio" name="projectteam" value="Web Team" checked="checked">
+                            <label>Web Team</label>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Mobile Development">
-                            <label>Mobile Development</label>
+                            <input type="radio" name="projectteam" value="Mobile Team">
+                            <label>Mobile Team</label>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Machine Learning">
-                            <label>Machine Learning</label>
+                            <input type="radio" name="projectteam" value="Game Team">
+                            <label>Game Team</label>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="interest" value="Cyber Security">
-                            <label>Cyber Security</label>
+                            <input type="radio" name="projectteam" value="Cyber Team">
+                            <label>Cyber Team</label>
                         </div>
                     </div>
                 </div>
@@ -162,58 +147,39 @@ require_once('db.php');
         $('.ui.form')
             .form({
                 fields: {
-                    email: {
-                        identifier: 'email',
+                    projectname: {
+                        identifier: 'projectname',
                         rules: [{
                                 type: 'empty',
-                                prompt: 'Please enter your e-mail'
-                            },
-                            {
-                                type: 'email',
-                                prompt: 'Please enter a valid e-mail'
+                                prompt: 'Please enter project name'
                             }
                         ]
                     },
-                    name: {
-                        identifier: 'name',
+                    githublink: {
+                        identifier: 'githublink',
                         rules: [{
                             type: 'empty',
-                            prompt: 'Please enter your name'
+                            prompt: 'Please enter github link'
                         }]
                     },
-                    department: {
-                        identifier: 'department',
+                    description: {
+                        identifier: 'description',
                         rules: [{
                             type: 'empty',
-                            prompt: 'Please enter your department'
+                            prompt: 'Please enter description'
                         }]
                     },
-                    grade: {
-                        identifier: 'grade',
-                        rules: [{
-                            type: 'empty',
-                            prompt: 'Please enter your grade'
-                        }]
-                    },
-                    phone: {
-                        identifier: 'phone',
-                        rules: [{
-                            type: 'empty',
-                            prompt: 'Please enter your phone'
-                        }]
-                    },
-
                 }
             });
 
         $('#add_button').click(function() {
             $('.ui.modal').modal('show');
-            $('#user_form')[0].reset();
+            $('#project_form')[0].reset();
             $('#action').val("Add");
             $('#operation').val("Add");
         });
 
-        var dataTable = $('#user_data').DataTable({
+        var dataTable = $('#table').DataTable({
             "pageLength": 300,
             "processing": true,
             "serverSide": true,
@@ -222,43 +188,34 @@ require_once('db.php');
             'serverMethod': 'post',
             "order": [],
             "ajax": {
-                url: "fetchmember.php"
+                url: "fetchproject.php"
             },
-            "columnDefs": [{
-                "targets": [6, 7],
-                "orderable": false
-            }]
 
         });
 
 
-        $(document).on('submit', '#user_form', function(event) {
+        $(document).on('submit', '#project_form', function(event) {
             event.preventDefault();
-            var name = $('#name').val();
-            var email = $('#email').val();
-            if (name != '' && email != '' && department != '' && phone != '' && grade != '') {
                 $.ajax({
-                    url: "addeditmember.php",
+                    url: "addeditproject.php",
                     method: 'POST',
                     data: new FormData(this),
                     contentType: false,
 
                     processData: false,
                     success: function(data) {
-                        $('#user_form')[0].reset();
+                        $('#project_form')[0].reset();
                         $('.ui.modal').modal('hide');
                         dataTable.ajax.reload();
                     }
                 });
-            } else {
-                alert("Error");
-            }
+        
         });
 
         $(document).on('click', '.update', function() {
             var user_id = $(this).attr("id");
             $.ajax({
-                url: "singlemember.php",
+                url: "singleproject.php",
                 method: "POST",
                 data: {
                     user_id: user_id
@@ -266,11 +223,9 @@ require_once('db.php');
                 dataType: "json",
                 success: function(data) {
                     $('.ui.modal').modal('show');
-                    $('#name').val(data.name);
-                    $('#email').val(data.email);
-                    $('#department').val(data.department);
-                    $('#grade').val(data.grade);
-                    $('#phone').val(data.phone);
+                    $('#projectname').val(data.projectname);
+                    $('#githublink').val(data.githublink);
+                    $('#description').val(data.description);
                     $('#user_id').val(user_id);
                     $('#action').val("Edit");
                     $('#operation').val("Edit");
@@ -282,7 +237,7 @@ require_once('db.php');
             var user_id = $(this).attr("id");
             if (confirm("Are you sure to delete this?")) {
                 $.ajax({
-                    url: "deletemember.php",
+                    url: "deleteproject.php",
                     method: "POST",
                     data: {
                         user_id: user_id
@@ -301,15 +256,28 @@ require_once('db.php');
 
         var chart = Highcharts.chart(container[0], {
             chart: {
-                type: 'pie',
+                type: 'column',
             },
             title: {
-                text: 'Members Fields',
+                text: 'Projects of the Teams ',
             },
             series: [{
                 data: chartData(dataTable),
+                dataSorting: {
+                    enabled: true
+                },
             }, ],
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: "Count",
+                },
+            },
         });
+
+
 
 
         dataTable.on('draw', function() {
@@ -322,7 +290,7 @@ require_once('db.php');
 
 
             dataTable
-                .column(5, {
+                .column(2, {
                     search: 'applied'
                 })
                 .data()

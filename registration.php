@@ -1,50 +1,64 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>Registration</title>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.css" />
+<style>
+    .ui.raised.segment{
+        margin-top: 4em;
+    }
+</style>
 </head>
+
 <body>
-<?php
+    <?php
     require('db.php');
-    // When form submitted, insert values into the database.
+    require_once("auth_session.php");
+
+
     if (isset($_REQUEST['username'])) {
-        // removes backslashes
+
         $username = stripslashes($_REQUEST['username']);
-        //escapes special characters in a string
-        $username = mysqli_real_escape_string($con, $username);
         $email    = stripslashes($_REQUEST['email']);
-        $email    = mysqli_real_escape_string($con, $email);
         $password = stripslashes($_REQUEST['password']);
-        $password = mysqli_real_escape_string($con, $password);
         $create_datetime = date("Y-m-d H:i:s");
-        $query    = "INSERT into `users` (username, password, email, create_datetime)
-                     VALUES ('$username', '" . md5($password) . "', '$email', '$create_datetime')";
-        $result   = mysqli_query($con, $query);
-        if ($result) {
-            echo "<div class='form'>
-                  <h3>You are registered successfully.</h3><br/>
-                  <p class='link'>Click here to <a href='login.php'>Login</a></p>
-                  </div>";
-        } else {
-            echo "<div class='form'>
-                  <h3>Required fields are missing.</h3><br/>
-                  <p class='link'>Click here to <a href='registration.php'>registration</a> again.</p>
-                  </div>";
+        $query=$db->prepare("INSERT into `users` (username, password, email, create_datetime)
+        VALUES ('$username', '" . md5($password) . "', '$email', '$create_datetime')");
+        $query->execute(); 
+        if ($query) {
+            header("Location: dashboard.php");
         }
     } else {
-?>
-    <form class="form" action="" method="post">
-        <h1 class="login-title">Registration</h1>
-        <input type="text" class="login-input" name="username" placeholder="Username" required />
-        <input type="text" class="login-input" name="email" placeholder="Email Adress">
-        <input type="password" class="login-input" name="password" placeholder="Password">
-        <input type="submit" name="submit" value="Register" class="login-button">
-        <p class="link"><a href="login.php">Click to Login</a></p>
-    </form>
-<?php
-    }
-?>
+    ?>
+        <?php
+    include_once("sidebar.php")
+    ?>
+        <div class="ui middle aligned center aligned grid">
+            <div class="five wide column">
+                <div class="ui raised segment">
+                    <form class="ui big form" method="post" name="login">
+
+                        <div class="field">
+                            <form class="form" action="" method="post">
+                                <h1 class="login-title">Add New User</h1>
+                                <input type="text" class="login-input" name="username" placeholder="Username" required />
+                                <div class="ui divider"></div>
+                                <input type="text" class="login-input" name="email" placeholder="Email Adress">
+                                <div class="ui divider"></div>
+                                <input type="password" class="login-input" name="password" placeholder="Password">
+                                <div class="ui divider"></div>
+                                <input type="submit" value="Add" name="submit" class="ui fluid large red submit button" />
+                                <div class="ui error message"></div>
+                            </form>
+                        </div>
+                </div>
+            <?php
+        }
+            ?>
 </body>
+
 </html>

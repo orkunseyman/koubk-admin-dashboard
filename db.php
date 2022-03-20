@@ -1,8 +1,10 @@
-<?php
- 
-    $con = mysqli_connect("localhost","root","","koubk");
 
-    if (mysqli_connect_errno()){
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
-?>
+<?php
+try {
+    $db = new PDO("mysql:host=localhost;dbname=koubk", 'root', ''); 
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $error) {
+    echo "Error" . $error->getMessage();
+    die();
+}
